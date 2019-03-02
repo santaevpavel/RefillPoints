@@ -1,7 +1,7 @@
 package ru.santaev.refillpoints.data.api.request
 
 
-class GetRefillPointsRequest(
+internal class GetRefillPointsRequest(
     val latitude: Double,
     val longitude: Double,
     val radius: Int

@@ -5,14 +5,17 @@ import io.reactivex.Flowable
 import ru.santaev.refillpoints.data.api.IRefillPointsApi
 import ru.santaev.refillpoints.data.database.IRefillPointsDatabase
 import ru.santaev.refillpoints.domain.repository.IRefillPointsRepository
+import ru.santaev.refillpoints.domain.repository.request.GetRefillPointsRequest
 
-class RefillPointsRepository(
+internal class RefillPointsRepository(
     private val refillPointsApi: IRefillPointsApi,
     private val refillPointsDatabase: IRefillPointsDatabase,
     private val cacheValidator: IRefillPointsCacheValidator
 ) : IRefillPointsRepository {
 
-    override fun getRefillPoints(): Flowable<List<IRefillPointsRepository.RefillPointDto>> {
+    override fun getRefillPoints(
+        request: GetRefillPointsRequest
+    ): Flowable<List<IRefillPointsRepository.RefillPointDto>> {
         return Flowable.empty()
     }
 

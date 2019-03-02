@@ -3,7 +3,7 @@ package ru.santaev.refillpoints.data.api
 import io.reactivex.Single
 import ru.santaev.refillpoints.data.api.request.GetRefillPointsRequest
 
-class RefillPointsApi(
+internal class RefillPointsApi(
     private val apiService: IRefillPointsApiService
 ): IRefillPointsApi {
 

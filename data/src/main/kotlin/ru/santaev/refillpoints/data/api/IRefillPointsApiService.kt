@@ -6,7 +6,7 @@ import retrofit2.http.Query
 import ru.santaev.refillpoints.data.api.response.GetRefillPointsResponse
 
 
-interface IRefillPointsApiService {
+internal interface IRefillPointsApiService {
 
     @GET("$version/deposition_points")
     fun getRefillPoints(

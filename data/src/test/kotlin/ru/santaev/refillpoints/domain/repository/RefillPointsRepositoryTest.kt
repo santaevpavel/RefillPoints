@@ -10,6 +10,7 @@ import ru.santaev.refillpoints.data.database.IRefillPointsDatabase
 import ru.santaev.refillpoints.data.dto.LocationDto
 import ru.santaev.refillpoints.data.repository.IRefillPointsCacheValidator
 import ru.santaev.refillpoints.data.repository.RefillPointsRepository
+import ru.santaev.refillpoints.domain.repository.request.GetRefillPointsRequest
 
 class RefillPointsRepositoryTest {
 
@@ -29,7 +30,7 @@ class RefillPointsRepositoryTest {
         val repository = createRepository()
 
         val refillPointValues = repository
-            .getRefillPoints()
+            .getRefillPoints(request = GetRefillPointsRequest(0.0, 0.0, 0))
             .test()
             .values()
 

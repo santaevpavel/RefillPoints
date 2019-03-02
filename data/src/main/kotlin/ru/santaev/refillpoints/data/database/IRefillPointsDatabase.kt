@@ -4,7 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import ru.santaev.refillpoints.data.dto.LocationDto
 
-interface IRefillPointsDatabase {
+internal interface IRefillPointsDatabase {
 
     fun getRefillPoints(): Flowable<List<RefillPointDto>>
 

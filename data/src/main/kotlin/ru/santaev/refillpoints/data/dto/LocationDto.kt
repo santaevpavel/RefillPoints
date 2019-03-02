@@ -1,6 +1,6 @@
 package ru.santaev.refillpoints.data.dto
 
-class LocationDto(
+internal class LocationDto(
     val lat: Double,
     val lng: Double
 )

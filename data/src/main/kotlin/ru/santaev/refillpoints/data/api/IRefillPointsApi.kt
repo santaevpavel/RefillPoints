@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import io.reactivex.Single
 import ru.santaev.refillpoints.data.api.request.GetRefillPointsRequest
 
-interface IRefillPointsApi {
+internal interface IRefillPointsApi {
 
     fun getRefillPoints(request: GetRefillPointsRequest): Single<List<RefillPointDto>>
 
