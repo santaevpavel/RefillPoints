@@ -72,16 +72,14 @@ class RefillPointsRepositoryTest {
 }
 
 private fun create(
-    id: Long,
     partnerName: String = "Partner",
-    location: LocationDto = LocationDto(0.0, 0.0),
+    location: IRefillPointsApi.LocationDto = IRefillPointsApi.LocationDto(0.0, 0.0),
     workHours: String = "workHours",
     phones: String = "+100",
     addressInfo: String = "addressInfo",
     fullAddress: String = "fullAddress"
 ): IRefillPointsApi.RefillPointDto {
     return IRefillPointsApi.RefillPointDto(
-        id = id,
         partnerName = partnerName,
         location = location,
         workHours = workHours,
