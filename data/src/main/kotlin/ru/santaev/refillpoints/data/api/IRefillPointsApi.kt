@@ -2,11 +2,11 @@ package ru.santaev.refillpoints.data.api
 
 import com.google.gson.annotations.SerializedName
 import io.reactivex.Single
-import ru.santaev.refillpoints.data.api.request.GetRefillPointsRequest
+import ru.santaev.refillpoints.data.api.request.GetRefillPointsApiRequest
 
 internal interface IRefillPointsApi {
 
-    fun getRefillPoints(request: GetRefillPointsRequest): Single<List<RefillPointDto>>
+    fun getRefillPoints(request: GetRefillPointsApiRequest): Single<List<RefillPointDto>>
 
     data class RefillPointDto(
         @SerializedName("partnerName")
