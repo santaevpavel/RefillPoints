@@ -1,13 +1,16 @@
-package ru.santaev.refillpoints.domain.repository
+package ru.santaev.refillpoints.data.database
 
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import ru.santaev.refillpoints.data.dto.LocationDto
 
-interface IRefillPointsRepository {
+interface IRefillPointsDatabase {
 
-    fun getRefillPoints(): Flowable<RefillPointDto>
+    fun getRefillPoints(): Flowable<List<RefillPointDto>>
 
-    fun markRefillPointAsViewed(refillPointId: Long): Completable
+    fun insert(entities: List<RefillPointDto>)
+
+    fun update(refillPointDto: RefillPointDto): Completable
 
     class RefillPointDto(
         val id: Long,
@@ -18,10 +21,5 @@ interface IRefillPointsRepository {
         val addressInfo: String,
         val fullAddress: String,
         val isViewed: Boolean
-    )
-
-    class LocationDto(
-        val lat: Double,
-        val lng: Double
     )
 }

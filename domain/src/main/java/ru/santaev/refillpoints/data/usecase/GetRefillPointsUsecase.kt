@@ -1,7 +1,7 @@
-package ru.santaev.refillpoints.domain.usecase
+package ru.santaev.refillpoints.data.usecase
 
 import io.reactivex.Flowable
-import ru.santaev.refillpoints.domain.dto.RefillPointDto
+import ru.santaev.refillpoints.data.dto.RefillPointDto
 
 class GetRefillPointsUsecase : IUsecase<Flowable<List<RefillPointDto>>, GetRefillPointsUsecase.Param> {
 
