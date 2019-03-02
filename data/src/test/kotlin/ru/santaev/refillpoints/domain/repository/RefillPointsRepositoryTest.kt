@@ -1,4 +1,4 @@
-package ru.santaev.refillpoints.data.repository
+package ru.santaev.refillpoints.domain.repository
 
 import io.mockk.every
 import io.mockk.mockk
@@ -8,6 +8,8 @@ import org.junit.Test
 import ru.santaev.refillpoints.data.api.IRefillPointsApi
 import ru.santaev.refillpoints.data.database.IRefillPointsDatabase
 import ru.santaev.refillpoints.data.dto.LocationDto
+import ru.santaev.refillpoints.data.repository.IRefillPointsCacheValidator
+import ru.santaev.refillpoints.data.repository.RefillPointsRepository
 
 class RefillPointsRepositoryTest {
 

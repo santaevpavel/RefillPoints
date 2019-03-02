@@ -4,6 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import ru.santaev.refillpoints.data.api.IRefillPointsApi
 import ru.santaev.refillpoints.data.database.IRefillPointsDatabase
+import ru.santaev.refillpoints.domain.repository.IRefillPointsRepository
 
 class RefillPointsRepository(
     private val refillPointsApi: IRefillPointsApi,

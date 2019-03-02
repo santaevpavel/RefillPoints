@@ -3,7 +3,6 @@ package ru.santaev.refillpoints.data.api
 import com.google.gson.annotations.SerializedName
 import io.reactivex.Single
 import ru.santaev.refillpoints.data.api.request.GetRefillPointsRequest
-import ru.santaev.refillpoints.data.dto.LocationDto
 
 interface IRefillPointsApi {
 

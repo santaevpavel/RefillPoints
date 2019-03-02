@@ -1,4 +1,4 @@
-package ru.santaev.refillpoints.data.usecase
+package ru.santaev.refillpoints.domain.usecase
 
 interface IUsecase<R, Param> {
 

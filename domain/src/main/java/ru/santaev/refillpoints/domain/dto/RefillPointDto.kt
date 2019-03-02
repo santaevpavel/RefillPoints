@@ -1,4 +1,4 @@
-package ru.santaev.refillpoints.data.dto
+package ru.santaev.refillpoints.domain.dto
 
 class RefillPointDto(
     val id: Long,
