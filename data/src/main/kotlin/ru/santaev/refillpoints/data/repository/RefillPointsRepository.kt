@@ -2,6 +2,7 @@ package ru.santaev.refillpoints.data.repository
 
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.schedulers.Schedulers
 import ru.santaev.refillpoints.data.api.IRefillPointsApi
 import ru.santaev.refillpoints.data.api.request.GetRefillPointsApiRequest
 import ru.santaev.refillpoints.data.database.IRefillPointsDatabase
@@ -19,6 +20,7 @@ internal class RefillPointsRepository(
     ): Flowable<List<IRefillPointsRepository.RefillPointDto>> {
         return refillPointsApi
             .getRefillPoints(request.toApiRequest())
+            .subscribeOn(Schedulers.io())
             .toFlowable()
             .map { list -> list.map { it.toRepositoryDto(0) } }
     }

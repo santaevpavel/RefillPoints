@@ -1,6 +1,6 @@
 package ru.santaev.refillpoints.view
 
-interface IRefillPointsMapView {
+interface IRefillPointsView {
 
     fun setRefillPoints()
 }

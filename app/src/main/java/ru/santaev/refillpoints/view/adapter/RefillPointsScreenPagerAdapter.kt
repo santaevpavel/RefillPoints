@@ -3,6 +3,7 @@ package ru.santaev.refillpoints.view.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import ru.santaev.refillpoints.view.fragment.RefillPointsListFragment
 import ru.santaev.refillpoints.view.fragment.RefillPointsMapFragment
 
 class RefillPointsScreenPagerAdapter(
@@ -14,7 +15,7 @@ class RefillPointsScreenPagerAdapter(
     override fun getItem(position: Int): Fragment {
         return when (position) {
             positionMapPage -> RefillPointsMapFragment.create()
-            positionListPage -> RefillPointsMapFragment.create()
+            positionListPage -> RefillPointsListFragment.create()
             else -> throw IllegalArgumentException("Unknown page with position = $position")
         }
     }

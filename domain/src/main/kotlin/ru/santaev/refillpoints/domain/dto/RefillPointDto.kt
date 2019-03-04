@@ -1,6 +1,6 @@
 package ru.santaev.refillpoints.domain.dto
 
-class RefillPointDto(
+data class RefillPointDto(
     val id: Long,
     val partnerName: String,
     val location: LocationDto,
