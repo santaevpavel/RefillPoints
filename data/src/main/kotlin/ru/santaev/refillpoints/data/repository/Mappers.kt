@@ -11,9 +11,9 @@ internal fun IRefillPointsApi.RefillPointDto.toRepositoryDto(
         id = id,
         partnerName = this.partnerName,
         location = this.location.toRepositoryDto(),
-        workHours = this.workHours,
-        addressInfo = this.addressInfo,
-        phones = this.phones,
+        workHours = this.workHours.orEmpty() ,
+        addressInfo = this.addressInfo.orEmpty(),
+        phones = this.phones.orEmpty(),
         fullAddress = this.fullAddress,
         isViewed = false
     )

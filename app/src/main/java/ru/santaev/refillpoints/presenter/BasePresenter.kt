@@ -6,10 +6,10 @@ import io.reactivex.disposables.Disposable
 abstract class BasePresenter<View>(
     var view: View?
 ) {
-    protected val disposables = CompositeDisposable()
+    private val disposables = CompositeDisposable()
 
     fun registerDisposable(disposable: Disposable) {
-        disposable.dispose()
+        disposables.add(disposable)
     }
 
     open fun onDestroy() {

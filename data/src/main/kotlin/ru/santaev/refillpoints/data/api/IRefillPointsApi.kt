@@ -14,11 +14,11 @@ internal interface IRefillPointsApi {
         @SerializedName("location")
         val location: LocationDto,
         @SerializedName("workHours")
-        val workHours: String,
+        val workHours: String?,
         @SerializedName("phones")
-        val phones: String,
+        val phones: String?,
         @SerializedName("addressInfo")
-        val addressInfo: String,
+        val addressInfo: String?,
         @SerializedName("fullAddress")
         val fullAddress: String
     )
