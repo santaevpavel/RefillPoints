@@ -5,7 +5,8 @@ import ru.santaev.refillpoints.di.module.RefillPointsActivityModule
 import ru.santaev.refillpoints.view.activity.RefillPointsActivity
 
 @Component(
-    modules = [RefillPointsActivityModule::class]
+    modules = [RefillPointsActivityModule::class],
+    dependencies = [ApplicationComponent::class]
 )
 interface RefillPointsActivityComponent {
 

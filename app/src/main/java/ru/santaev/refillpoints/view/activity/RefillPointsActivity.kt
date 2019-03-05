@@ -7,7 +7,6 @@ import ru.santaev.refillpoints.R
 import ru.santaev.refillpoints.RefillPointsApplication
 import ru.santaev.refillpoints.databinding.ActivityMainBinding
 import ru.santaev.refillpoints.di.component.DaggerRefillPointsActivityComponent
-import ru.santaev.refillpoints.di.module.RefillPointsActivityModule
 import ru.santaev.refillpoints.presenter.RefillPointsMapPresenter
 import ru.santaev.refillpoints.view.IRefillPointsView
 import ru.santaev.refillpoints.view.adapter.RefillPointsScreenPagerAdapter
@@ -46,9 +45,7 @@ class RefillPointsActivity : AppCompatActivity(), IRefillPointsView {
     private fun initPresenter() {
         DaggerRefillPointsActivityComponent
             .builder()
-            .refillPointsActivityModule(
-                RefillPointsActivityModule((applicationContext as RefillPointsApplication).domainComponent)
-            )
+            .applicationComponent((applicationContext as RefillPointsApplication).applicationComponent)
             .build()
             .inject(this)
         presenter.view = this
