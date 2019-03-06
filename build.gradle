@@ -11,10 +11,13 @@ buildscript {
     ext.retrofit_version = '2.5.0'
     ext.gson_version = '2.8.5'
     ext.dagger_version = '2.21'
+    ext.google_services_version = '16.1.0'
+    ext.rx_permission_version = '0.10.2'
 
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 
     dependencies {
