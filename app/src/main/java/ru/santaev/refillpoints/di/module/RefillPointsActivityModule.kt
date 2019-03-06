@@ -14,4 +14,10 @@ class RefillPointsActivityModule {
     ): RefillPointsMapPresenter {
         return RefillPointsMapPresenter(usecaseFactory.getGetRefillPointsUsecase())
     }
+
+    /*@Singleton
+    @Provides
+    fun provideRefillPointsMapFragmentPresenter(): RefillPointsMapPresenter {
+        return provideRefillPointsMapFragmentPresenter()
+    }*/
 }

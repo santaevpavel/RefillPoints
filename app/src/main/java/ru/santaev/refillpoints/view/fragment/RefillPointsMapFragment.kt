@@ -9,18 +9,29 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import ru.santaev.refillpoints.R
 import ru.santaev.refillpoints.databinding.FragmentRefillPointsMapBinding
+import ru.santaev.refillpoints.presenter.RefillPointsMapPresenter
 
 class RefillPointsMapFragment : Fragment() {
 
     private lateinit var binding: FragmentRefillPointsMapBinding
-    private var googleMap: GoogleMap? = null
     private lateinit var rxPermissions: RxPermissions
+    private var googleMap: GoogleMap? = null
     private var permissionDisposable: Disposable? = null
+    private var refillPoints: List<RefillPointsMapPresenter.RefillPointViewModel>? = null
+
+    fun setRefillPoints(refillPoints: List<RefillPointsMapPresenter.RefillPointViewModel>) {
+        this.refillPoints = refillPoints
+        if (googleMap != null) {
+            addRefillPointsToMap(refillPoints)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, ru.santaev.refillpoints.R.layout.fragment_refill_points_map, container, false)
@@ -49,9 +60,11 @@ class RefillPointsMapFragment : Fragment() {
     }
 
     private fun initGoogleMap(map: GoogleMap) {
-        googleMap = map.apply {
+        googleMap = map
+        map.apply {
             uiSettings.isZoomControlsEnabled = true
             enableGoogleMapMyLocation()
+            refillPoints?.let { addRefillPointsToMap(it) }
         }
     }
 
@@ -72,6 +85,14 @@ class RefillPointsMapFragment : Fragment() {
         try {
             isMyLocationEnabled = true
         } catch (e: SecurityException) {
+        }
+    }
+
+    private fun addRefillPointsToMap(list: List<RefillPointsMapPresenter.RefillPointViewModel>) {
+        googleMap?.apply {
+            list.forEach { point ->
+                addMarker(MarkerOptions().position(LatLng(point.location.lat, point.location.lng)))
+            }
         }
     }
 
