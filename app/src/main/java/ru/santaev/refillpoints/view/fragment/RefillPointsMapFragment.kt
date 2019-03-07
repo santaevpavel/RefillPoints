@@ -18,20 +18,21 @@ import ru.santaev.refillpoints.R
 import ru.santaev.refillpoints.databinding.FragmentRefillPointsMapBinding
 import ru.santaev.refillpoints.log.ILoggable
 import ru.santaev.refillpoints.presenter.RefillPointsMapFragmentPresenter
-import ru.santaev.refillpoints.presenter.RefillPointsMapPresenter
+import ru.santaev.refillpoints.presenter.RefillPointsMapFragmentPresenter.RefillPointViewModel
+import ru.santaev.refillpoints.view.IRefillPointsMapView
 import ru.santaev.refillpoints.view.activity.RefillPointsActivity
 import javax.inject.Inject
 
-class RefillPointsMapFragment : Fragment(), ILoggable {
+class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
 
     @Inject lateinit var presenter: RefillPointsMapFragmentPresenter
     private lateinit var binding: FragmentRefillPointsMapBinding
     private lateinit var rxPermissions: RxPermissions
     private var googleMap: GoogleMap? = null
     private var permissionDisposable: Disposable? = null
-    private var refillPoints: List<RefillPointsMapPresenter.RefillPointViewModel>? = null
+    private var refillPoints: List<RefillPointViewModel>? = null
 
-    fun setRefillPoints(refillPoints: List<RefillPointsMapPresenter.RefillPointViewModel>) {
+    override fun showRefillPoints(refillPoints: List<RefillPointViewModel>) {
         this.refillPoints = refillPoints
         if (googleMap != null) {
             addRefillPointsToMap(refillPoints)
@@ -69,6 +70,7 @@ class RefillPointsMapFragment : Fragment(), ILoggable {
         (activity as RefillPointsActivity)
             .component
             .inject(this)
+        presenter.view = this
     }
 
     private fun initGoogleMap(map: GoogleMap) {
@@ -110,8 +112,9 @@ class RefillPointsMapFragment : Fragment(), ILoggable {
         }
     }
 
-    private fun addRefillPointsToMap(list: List<RefillPointsMapPresenter.RefillPointViewModel>) {
+    private fun addRefillPointsToMap(list: List<RefillPointViewModel>) {
         googleMap?.apply {
+            clear()
             list.forEach { point ->
                 addMarker(MarkerOptions().position(LatLng(point.location.lat, point.location.lng)))
             }

@@ -3,7 +3,6 @@ package ru.santaev.refillpoints.view.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import ru.santaev.refillpoints.R
 import ru.santaev.refillpoints.RefillPointsApplication
 import ru.santaev.refillpoints.databinding.ActivityMainBinding
@@ -12,7 +11,6 @@ import ru.santaev.refillpoints.di.component.RefillPointsActivityComponent
 import ru.santaev.refillpoints.presenter.RefillPointsMapPresenter
 import ru.santaev.refillpoints.view.IRefillPointsView
 import ru.santaev.refillpoints.view.adapter.RefillPointsScreenPagerAdapter
-import ru.santaev.refillpoints.view.fragment.RefillPointsMapFragment
 import javax.inject.Inject
 
 class RefillPointsActivity : AppCompatActivity(), IRefillPointsView {
@@ -28,12 +26,12 @@ class RefillPointsActivity : AppCompatActivity(), IRefillPointsView {
         initPresenter()
     }
 
-    override fun setRefillPoints(refillPoints: List<RefillPointsMapPresenter.RefillPointViewModel>) {
+    /*override fun showRefillPoints(refillPoints: List<RefillPointsMapPresenter.RefillPointViewModel>) {
         val mapFragment: Fragment? = supportFragmentManager
             .fragments
             .firstOrNull { it is RefillPointsMapFragment }
-        (mapFragment as? RefillPointsMapFragment)?.setRefillPoints(refillPoints)
-    }
+        (mapFragment as? RefillPointsMapFragment)?.showRefillPoints(refillPoints)
+    }*/
 
     private fun initUi() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)

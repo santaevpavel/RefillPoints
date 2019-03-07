@@ -12,17 +12,19 @@ class RefillPointsActivityModule {
 
     @RefillPointsActivityScope
     @Provides
-    fun provideRefillPointsMapPresenter(
-        usecaseFactory: IUsecaseFactory
-    ): RefillPointsMapPresenter {
-        return RefillPointsMapPresenter(usecaseFactory.getGetRefillPointsUsecase())
+    fun provideRefillPointsMapPresenter(): RefillPointsMapPresenter {
+        return RefillPointsMapPresenter()
     }
 
     @RefillPointsActivityScope
     @Provides
     fun provideRefillPointsMapFragmentPresenter(
-        parentPresenter: RefillPointsMapPresenter
+        parentPresenter: RefillPointsMapPresenter,
+        usecaseFactory: IUsecaseFactory
     ): RefillPointsMapFragmentPresenter{
-        return RefillPointsMapFragmentPresenter(parentPresenter)
+        return RefillPointsMapFragmentPresenter(
+            parentPresenter = parentPresenter,
+            getRefillPointsUsecase = usecaseFactory.getGetRefillPointsUsecase()
+        )
     }
 }
