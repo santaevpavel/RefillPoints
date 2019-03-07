@@ -16,10 +16,15 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import ru.santaev.refillpoints.R
 import ru.santaev.refillpoints.databinding.FragmentRefillPointsMapBinding
+import ru.santaev.refillpoints.log.ILoggable
+import ru.santaev.refillpoints.presenter.RefillPointsMapFragmentPresenter
 import ru.santaev.refillpoints.presenter.RefillPointsMapPresenter
+import ru.santaev.refillpoints.view.activity.RefillPointsActivity
+import javax.inject.Inject
 
-class RefillPointsMapFragment : Fragment() {
+class RefillPointsMapFragment : Fragment(), ILoggable {
 
+    @Inject lateinit var presenter: RefillPointsMapFragmentPresenter
     private lateinit var binding: FragmentRefillPointsMapBinding
     private lateinit var rxPermissions: RxPermissions
     private var googleMap: GoogleMap? = null
@@ -34,13 +39,14 @@ class RefillPointsMapFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, ru.santaev.refillpoints.R.layout.fragment_refill_points_map, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_refill_points_map, container, false)
         initUI()
         return binding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initPresenter()
         rxPermissions = RxPermissions(this)
     }
 
@@ -59,13 +65,29 @@ class RefillPointsMapFragment : Fragment() {
         mapFragment.getMapAsync { initGoogleMap(it) }
     }
 
+    private fun initPresenter() {
+        (activity as RefillPointsActivity)
+            .component
+            .inject(this)
+    }
+
     private fun initGoogleMap(map: GoogleMap) {
         googleMap = map
         map.apply {
             uiSettings.isZoomControlsEnabled = true
             enableGoogleMapMyLocation()
             refillPoints?.let { addRefillPointsToMap(it) }
+            setOnCameraMoveListener(this@RefillPointsMapFragment::onCameraMove)
         }
+    }
+
+    private fun onCameraMove() {
+        val position = googleMap?.cameraPosition?.target ?: return
+        val topLeft = googleMap?.projection?.visibleRegion?.farLeft ?: return
+        presenter.onMoveCamera(
+            location = position.toLocation(),
+            leftTopPoint = topLeft.toLocation()
+        )
     }
 
     private fun checkAndRequestPermissions() {
@@ -94,6 +116,13 @@ class RefillPointsMapFragment : Fragment() {
                 addMarker(MarkerOptions().position(LatLng(point.location.lat, point.location.lng)))
             }
         }
+    }
+
+    private fun LatLng.toLocation(): RefillPointsMapFragmentPresenter.Location {
+        return RefillPointsMapFragmentPresenter.Location(
+            lat = this.latitude,
+            lng = this.longitude
+        )
     }
 
     companion object {

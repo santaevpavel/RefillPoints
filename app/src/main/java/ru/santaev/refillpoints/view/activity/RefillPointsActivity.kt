@@ -8,6 +8,7 @@ import ru.santaev.refillpoints.R
 import ru.santaev.refillpoints.RefillPointsApplication
 import ru.santaev.refillpoints.databinding.ActivityMainBinding
 import ru.santaev.refillpoints.di.component.DaggerRefillPointsActivityComponent
+import ru.santaev.refillpoints.di.component.RefillPointsActivityComponent
 import ru.santaev.refillpoints.presenter.RefillPointsMapPresenter
 import ru.santaev.refillpoints.view.IRefillPointsView
 import ru.santaev.refillpoints.view.adapter.RefillPointsScreenPagerAdapter
@@ -16,6 +17,7 @@ import javax.inject.Inject
 
 class RefillPointsActivity : AppCompatActivity(), IRefillPointsView {
 
+    lateinit var component: RefillPointsActivityComponent
     @Inject lateinit var presenter: RefillPointsMapPresenter
     private lateinit var pageAdapter: RefillPointsScreenPagerAdapter
     private lateinit var binding: ActivityMainBinding
@@ -24,15 +26,6 @@ class RefillPointsActivity : AppCompatActivity(), IRefillPointsView {
         super.onCreate(savedInstanceState)
         initUi()
         initPresenter()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        presenter.loadRefillPoints(
-            lat = 55.018803,
-            lng = 82.933952,
-            radius = 1000
-        )
     }
 
     override fun setRefillPoints(refillPoints: List<RefillPointsMapPresenter.RefillPointViewModel>) {
@@ -55,7 +48,11 @@ class RefillPointsActivity : AppCompatActivity(), IRefillPointsView {
             .builder()
             .applicationComponent((applicationContext as RefillPointsApplication).applicationComponent)
             .build()
-            .inject(this)
+            .apply {
+                component = this@apply
+                inject(this@RefillPointsActivity)
+            }
+
         presenter.view = this
     }
 }

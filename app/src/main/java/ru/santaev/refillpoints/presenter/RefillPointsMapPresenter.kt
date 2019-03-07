@@ -7,12 +7,13 @@ import ru.santaev.refillpoints.domain.dto.LocationDto
 import ru.santaev.refillpoints.domain.dto.RefillPointDto
 import ru.santaev.refillpoints.domain.usecase.GetRefillPointsUsecase
 import ru.santaev.refillpoints.view.IRefillPointsView
+import javax.inject.Inject
 
 class RefillPointsMapPresenter(
     private val getRefillPointsUsecase: GetRefillPointsUsecase
-    //private val childPresenter: RefillPointsMapFragmentPresenter
 ) : BasePresenter<IRefillPointsView>(null) {
 
+    @Inject lateinit var presenter: RefillPointsMapFragmentPresenter
     private var refillPoints: List<RefillPointViewModel>? = null
 
     fun loadRefillPoints(lat: Double, lng: Double, radius: Int) {
