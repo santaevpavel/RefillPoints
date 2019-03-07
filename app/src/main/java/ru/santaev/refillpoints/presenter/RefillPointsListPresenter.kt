@@ -31,9 +31,4 @@ class RefillPointsListPresenter(
             isViewed = this.isViewed
         )
     }
-
-    companion object {
-
-        private const val cameraMoveEventDebounceTimeoutSeconds = 1
-    }
 }

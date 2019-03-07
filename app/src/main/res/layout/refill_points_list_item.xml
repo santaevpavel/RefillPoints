@@ -2,20 +2,31 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <import type="ru.santaev.refillpoints.presenter.RefillPointsListPresenter.RefillPointViewModel"/>
+
+        <variable
+            name="point"
+            type="RefillPointViewModel"/>
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="72dp"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        android:paddingEnd="16dp"
+        android:background="?android:attr/selectableItemBackground">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/icon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            android:src="@color/colorAccent"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -32,6 +43,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
+                android:textSize="@dimen/default_text_size"
+                android:textColor="@color/default_text_color"
+                android:text="@{point.partnerName}"
                 tools:text="Name"/>
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -39,6 +53,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
+                android:textSize="@dimen/small_text_size"
+                android:textColor="@color/text_color_gray"
+                android:text="@{point.addressInfo}"
                 tools:text="Moscow, Lenin street, house 12"/>
 
         </LinearLayout>

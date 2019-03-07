@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.santaev.refillpoints.R
@@ -19,6 +20,7 @@ import ru.santaev.refillpoints.view.activity.RefillPointsActivity
 import ru.santaev.refillpoints.view.adapter.SimpleRecyclerViewAdapter
 import javax.inject.Inject
 
+
 class RefillPointsListFragment : Fragment(), IRefillPointsListView {
 
     @Inject
@@ -26,7 +28,7 @@ class RefillPointsListFragment : Fragment(), IRefillPointsListView {
     private lateinit var binding: FragmentRefillPointsListBinding
     private val adapter = SimpleRecyclerViewAdapter<RefillPointViewModel, RefillPointsListItemBinding>(
         layoutResId = R.layout.refill_points_list_item,
-        binder = { item, _ -> name.text = item.partnerName },
+        binder = { item, holder -> holder.binding.point = item },
         viewCreator = {}
     )
 
@@ -53,6 +55,7 @@ class RefillPointsListFragment : Fragment(), IRefillPointsListView {
         binding.apply {
             list.adapter = adapter
             list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            list.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
     }
 
