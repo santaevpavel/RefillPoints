@@ -20,6 +20,14 @@ class RefillPointsScreenPagerAdapter(
         }
     }
 
+    override fun getPageTitle(position: Int): CharSequence? {
+        return when (position) {
+            positionMapPage -> "Map"
+            positionListPage -> "List"
+            else -> throw IllegalArgumentException("Unknown page with position = $position")
+        }
+    }
+
     companion object {
         private const val numberOfPages = 2
         private const val positionMapPage = 0
