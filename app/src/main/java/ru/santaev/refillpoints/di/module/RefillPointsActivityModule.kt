@@ -4,27 +4,38 @@ import dagger.Module
 import dagger.Provides
 import ru.santaev.refillpoints.di.scope.RefillPointsActivityScope
 import ru.santaev.refillpoints.domain.factory.IUsecaseFactory
-import ru.santaev.refillpoints.presenter.RefillPointsMapFragmentPresenter
+import ru.santaev.refillpoints.presenter.RefillPointsListPresenter
 import ru.santaev.refillpoints.presenter.RefillPointsMapPresenter
+import ru.santaev.refillpoints.presenter.RefillPointsPresenter
 
 @Module
 class RefillPointsActivityModule {
 
     @RefillPointsActivityScope
     @Provides
-    fun provideRefillPointsMapPresenter(): RefillPointsMapPresenter {
-        return RefillPointsMapPresenter()
+    fun provideRefillPointsMapPresenter(): RefillPointsPresenter {
+        return RefillPointsPresenter()
     }
 
     @RefillPointsActivityScope
     @Provides
     fun provideRefillPointsMapFragmentPresenter(
-        parentPresenter: RefillPointsMapPresenter,
+        parentPresenter: RefillPointsPresenter,
         usecaseFactory: IUsecaseFactory
-    ): RefillPointsMapFragmentPresenter{
-        return RefillPointsMapFragmentPresenter(
+    ): RefillPointsMapPresenter {
+        return RefillPointsMapPresenter(
             parentPresenter = parentPresenter,
             getRefillPointsUsecase = usecaseFactory.getGetRefillPointsUsecase()
+        )
+    }
+
+    @RefillPointsActivityScope
+    @Provides
+    fun provideRefillPointsListPresenter(
+        parentPresenter: RefillPointsPresenter
+    ): RefillPointsListPresenter {
+        return RefillPointsListPresenter(
+            parentPresenter = parentPresenter
         )
     }
 }

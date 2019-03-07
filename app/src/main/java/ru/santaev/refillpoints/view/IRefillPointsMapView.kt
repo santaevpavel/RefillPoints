@@ -1,8 +1,8 @@
 package ru.santaev.refillpoints.view
 
-import ru.santaev.refillpoints.presenter.RefillPointsMapFragmentPresenter
+import ru.santaev.refillpoints.presenter.RefillPointsMapPresenter
 
 interface IRefillPointsMapView {
 
-    fun showRefillPoints(refillPoints: List<RefillPointsMapFragmentPresenter.RefillPointViewModel>)
+    fun showRefillPoints(refillPoints: List<RefillPointsMapPresenter.RefillPointViewModel>)
 }

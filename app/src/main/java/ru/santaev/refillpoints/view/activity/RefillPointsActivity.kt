@@ -10,7 +10,7 @@ import ru.santaev.refillpoints.databinding.ActivityMainBinding
 import ru.santaev.refillpoints.di.component.DaggerRefillPointsActivityComponent
 import ru.santaev.refillpoints.di.component.RefillPointsActivityComponent
 import ru.santaev.refillpoints.domain.dto.RefillPointDto
-import ru.santaev.refillpoints.presenter.RefillPointsMapPresenter
+import ru.santaev.refillpoints.presenter.RefillPointsPresenter
 import ru.santaev.refillpoints.view.IRefillPointsView
 import ru.santaev.refillpoints.view.adapter.RefillPointsScreenPagerAdapter
 import ru.santaev.refillpoints.view.fragment.RefillPointsListFragment
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class RefillPointsActivity : AppCompatActivity(), IRefillPointsView {
 
     lateinit var component: RefillPointsActivityComponent
-    @Inject lateinit var presenter: RefillPointsMapPresenter
+    @Inject lateinit var presenter: RefillPointsPresenter
     private lateinit var pageAdapter: RefillPointsScreenPagerAdapter
     private lateinit var binding: ActivityMainBinding
 
@@ -29,11 +29,11 @@ class RefillPointsActivity : AppCompatActivity(), IRefillPointsView {
         initPresenter()
     }
 
-    override fun passRefillPoints(refillPointDto: List<RefillPointDto>) {
-        val mapFragment: Fragment? = supportFragmentManager
+    override fun passRefillPoints(refillPoints: List<RefillPointDto>) {
+        val listFragment: Fragment? = supportFragmentManager
             .fragments
             .firstOrNull { it is RefillPointsListFragment }
-        //(mapFragment as? RefillPointsMapFragment)?.showRefillPoints()
+        (listFragment as? RefillPointsListFragment)?.setRefillPoints(refillPoints)
     }
 
     private fun initUi() {

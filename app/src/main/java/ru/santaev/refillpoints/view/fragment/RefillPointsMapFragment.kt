@@ -17,15 +17,15 @@ import io.reactivex.rxkotlin.subscribeBy
 import ru.santaev.refillpoints.R
 import ru.santaev.refillpoints.databinding.FragmentRefillPointsMapBinding
 import ru.santaev.refillpoints.log.ILoggable
-import ru.santaev.refillpoints.presenter.RefillPointsMapFragmentPresenter
-import ru.santaev.refillpoints.presenter.RefillPointsMapFragmentPresenter.RefillPointViewModel
+import ru.santaev.refillpoints.presenter.RefillPointsMapPresenter
+import ru.santaev.refillpoints.presenter.RefillPointsMapPresenter.RefillPointViewModel
 import ru.santaev.refillpoints.view.IRefillPointsMapView
 import ru.santaev.refillpoints.view.activity.RefillPointsActivity
 import javax.inject.Inject
 
 class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
 
-    @Inject lateinit var presenter: RefillPointsMapFragmentPresenter
+    @Inject lateinit var presenter: RefillPointsMapPresenter
     private lateinit var binding: FragmentRefillPointsMapBinding
     private lateinit var rxPermissions: RxPermissions
     private var googleMap: GoogleMap? = null
@@ -121,8 +121,8 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
         }
     }
 
-    private fun LatLng.toLocation(): RefillPointsMapFragmentPresenter.Location {
-        return RefillPointsMapFragmentPresenter.Location(
+    private fun LatLng.toLocation(): RefillPointsMapPresenter.Location {
+        return RefillPointsMapPresenter.Location(
             lat = this.latitude,
             lng = this.longitude
         )
