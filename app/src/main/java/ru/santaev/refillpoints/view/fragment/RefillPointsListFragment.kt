@@ -16,7 +16,9 @@ import ru.santaev.refillpoints.databinding.RefillPointsListItemBinding
 import ru.santaev.refillpoints.domain.dto.RefillPointDto
 import ru.santaev.refillpoints.presenter.RefillPointsListPresenter
 import ru.santaev.refillpoints.presenter.RefillPointsListPresenter.RefillPointViewModel
+import ru.santaev.refillpoints.presenter.RefillPointsMapPresenter
 import ru.santaev.refillpoints.view.IRefillPointsListView
+import ru.santaev.refillpoints.view.activity.RefillPointDetailsActivity
 import ru.santaev.refillpoints.view.activity.RefillPointsActivity
 import ru.santaev.refillpoints.view.adapter.SimpleRecyclerViewAdapter
 import javax.inject.Inject
@@ -43,6 +45,20 @@ class RefillPointsListFragment : Fragment(), IRefillPointsListView {
 
     override fun showRefillPoints(refillPoints: List<RefillPointViewModel>) {
         adapter.items = refillPoints
+    }
+
+    override fun openRefillPointDetails(point: RefillPointsMapPresenter.RefillPointViewModel) {
+        val details = RefillPointDetailsActivity.RefillPointDetails(
+            id = point.id,
+            partnerName = point.partnerName,
+            location = RefillPointDetailsActivity.Location(point.location.lat, point.location.lng),
+            workHours = point.workHours,
+            addressInfo = point.addressInfo,
+            phones = point.phones,
+            fullAddress = point.fullAddress
+        )
+        val context = context ?: return
+        startActivity(RefillPointDetailsActivity.createIntent(context, details))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -52,6 +52,7 @@ class RefillPointsMapPresenter(
             if (!point.isViewed) {
                 markAsViewed(point.id)
             }
+            view?.openRefillPointDetails(point)
         }
     }
 

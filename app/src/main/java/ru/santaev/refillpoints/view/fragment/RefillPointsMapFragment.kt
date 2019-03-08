@@ -28,6 +28,7 @@ import ru.santaev.refillpoints.log.ILoggable
 import ru.santaev.refillpoints.presenter.RefillPointsMapPresenter
 import ru.santaev.refillpoints.presenter.RefillPointsMapPresenter.RefillPointViewModel
 import ru.santaev.refillpoints.view.IRefillPointsMapView
+import ru.santaev.refillpoints.view.activity.RefillPointDetailsActivity
 import ru.santaev.refillpoints.view.activity.RefillPointsActivity
 import javax.inject.Inject
 
@@ -54,6 +55,20 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
         binding.bottomSheet.point = point
     }
 
+    override fun openRefillPointDetails(point: RefillPointViewModel) {
+        val details = RefillPointDetailsActivity.RefillPointDetails(
+            id = point.id,
+            partnerName = point.partnerName,
+            location = RefillPointDetailsActivity.Location(point.location.lat, point.location.lng),
+            workHours = point.workHours,
+            addressInfo = point.addressInfo,
+            phones = point.phones,
+            fullAddress = point.fullAddress
+        )
+        val context = context ?: return
+        startActivity(RefillPointDetailsActivity.createIntent(context, details))
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_refill_points_map, container, false)
         initUI()
@@ -77,6 +92,7 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
 
     override fun onDestroy() {
         super.onDestroy()
+        presenter.onDestroy()
         permissionDisposable?.dispose()
     }
 

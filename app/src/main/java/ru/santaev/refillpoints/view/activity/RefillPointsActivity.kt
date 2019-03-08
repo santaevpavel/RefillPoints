@@ -24,8 +24,8 @@ class RefillPointsActivity : AppCompatActivity(), IRefillPointsView {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         initPresenter()
+        super.onCreate(savedInstanceState)
         initUi()
     }
 
