@@ -1,14 +1,20 @@
 package ru.santaev.refillpoints.view.fragment
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.tbruyelle.rxpermissions2.RxPermissions
@@ -25,7 +31,8 @@ import javax.inject.Inject
 
 class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
 
-    @Inject lateinit var presenter: RefillPointsMapPresenter
+    @Inject
+    lateinit var presenter: RefillPointsMapPresenter
     private lateinit var binding: FragmentRefillPointsMapBinding
     private lateinit var rxPermissions: RxPermissions
     private var googleMap: GoogleMap? = null
@@ -45,9 +52,13 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
         return binding.root
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        initPresenter()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initPresenter()
         rxPermissions = RxPermissions(this)
     }
 
@@ -80,6 +91,37 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
             enableGoogleMapMyLocation()
             refillPoints?.let { addRefillPointsToMap(it) }
             setOnCameraMoveListener(this@RefillPointsMapFragment::onCameraMove)
+            goToCurrentLocation(animate = false)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun goToCurrentLocation(animate: Boolean) {
+        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager? ?: return
+        if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            return
+        }
+        try {
+            val location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) ?: return
+            goToLocation(location, animate)
+        } catch (e: SecurityException) {
+        }
+    }
+
+    private fun goToLocation(location: Location, animate: Boolean) {
+        val googleMap = googleMap ?: return
+        val cameraParams = CameraPosition.fromLatLngZoom(
+            LatLng(
+                location.latitude,
+                location.longitude
+            ),
+            defaultMapZoom
+        )
+        val cameraPosition = CameraUpdateFactory.newCameraPosition(cameraParams)
+        if (animate) {
+            googleMap.animateCamera(cameraPosition)
+        } else {
+            googleMap.moveCamera(cameraPosition)
         }
     }
 
@@ -99,6 +141,7 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
                 onNext = { isGranted ->
                     if (isGranted) {
                         googleMap?.enableGoogleMapMyLocation()
+                        goToCurrentLocation(animate = true)
                     }
                 }
             )
@@ -129,6 +172,8 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
     }
 
     companion object {
+
+        private const val defaultMapZoom = 15F
 
         fun create(): RefillPointsMapFragment = RefillPointsMapFragment()
     }
