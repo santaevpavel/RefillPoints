@@ -68,7 +68,7 @@ class RefillPointsMapPresenter(
             )
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
-                onNext = ::onRefillPointsLoaded,
+                onSuccess = ::onRefillPointsLoaded,
                 onError = { log("Error while loading points: $it") }
             )
             .also { registerDisposable(it) }

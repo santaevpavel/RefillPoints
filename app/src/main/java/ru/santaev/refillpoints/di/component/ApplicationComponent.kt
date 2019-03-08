@@ -3,12 +3,13 @@ package ru.santaev.refillpoints.di.component
 import android.content.Context
 import dagger.Component
 import ru.santaev.refillpoints.di.module.ContextModule
+import ru.santaev.refillpoints.di.module.DatabaseModule
 import ru.santaev.refillpoints.di.module.RepositoryModule
 import ru.santaev.refillpoints.di.module.UsecaseModule
 import ru.santaev.refillpoints.domain.factory.IUsecaseFactory
 
 @Component(
-    modules = [ContextModule::class, UsecaseModule::class, RepositoryModule::class]
+    modules = [ContextModule::class, UsecaseModule::class, RepositoryModule::class, DatabaseModule::class]
 )
 interface ApplicationComponent {
 

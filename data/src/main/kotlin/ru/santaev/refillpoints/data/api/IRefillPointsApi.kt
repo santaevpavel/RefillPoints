@@ -9,6 +9,8 @@ internal interface IRefillPointsApi {
     fun getRefillPoints(request: GetRefillPointsApiRequest): Single<List<RefillPointDto>>
 
     data class RefillPointDto(
+        @SerializedName("externalId")
+        val externalId: String,
         @SerializedName("partnerName")
         val partnerName: String,
         @SerializedName("location")
