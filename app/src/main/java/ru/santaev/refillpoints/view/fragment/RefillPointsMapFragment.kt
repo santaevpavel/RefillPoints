@@ -16,7 +16,9 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
@@ -35,6 +37,7 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
     lateinit var presenter: RefillPointsMapPresenter
     private lateinit var binding: FragmentRefillPointsMapBinding
     private lateinit var rxPermissions: RxPermissions
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private var googleMap: GoogleMap? = null
     private var permissionDisposable: Disposable? = null
     private var refillPoints: List<RefillPointViewModel>? = null
@@ -44,6 +47,11 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
         if (googleMap != null) {
             addRefillPointsToMap(refillPoints)
         }
+    }
+
+    override fun showBottomSheet(point: RefillPointViewModel) {
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        binding.bottomSheet.point = point
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -75,6 +83,8 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
     private fun initUI() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync { initGoogleMap(it) }
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet.root)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     private fun initPresenter() {
@@ -92,7 +102,14 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
             refillPoints?.let { addRefillPointsToMap(it) }
             setOnCameraMoveListener(this@RefillPointsMapFragment::onCameraMove)
             goToCurrentLocation(animate = false)
+            setOnMarkerClickListener(this@RefillPointsMapFragment::onMarkerClick)
         }
+    }
+
+    private fun onMarkerClick(marker: Marker): Boolean {
+        val id = marker.tag as Long? ?: return false
+        presenter.onClickRefillPointMarker(id)
+        return true
     }
 
     @SuppressLint("MissingPermission")
@@ -159,7 +176,12 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
         googleMap?.apply {
             clear()
             list.forEach { point ->
-                addMarker(MarkerOptions().position(LatLng(point.location.lat, point.location.lng)))
+                val marker = MarkerOptions().apply {
+                    position(LatLng(point.location.lat, point.location.lng))
+                }
+                addMarker(marker).apply {
+                    tag = point.id
+                }
             }
         }
     }

@@ -25,8 +25,8 @@ class RefillPointsActivity : AppCompatActivity(), IRefillPointsView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initUi()
         initPresenter()
+        initUi()
     }
 
     override fun passRefillPoints(refillPoints: List<RefillPointDto>) {

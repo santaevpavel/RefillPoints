@@ -38,6 +38,11 @@ class RefillPointsMapPresenter(
         cameraMoveObject.onNext(event)
     }
 
+    fun onClickRefillPointMarker(id: Long) {
+        val point = refillPoints?.firstOrNull { it.id == id } ?: return
+        view?.showBottomSheet(point)
+    }
+
     private fun onMoveCameraProcessed(event: MoveCameraEvent) {
         val radius = distanceBetween(
             lat1 = event.location.lat,
