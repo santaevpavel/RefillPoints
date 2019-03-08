@@ -2,7 +2,6 @@ package ru.santaev.refillpoints.data.repository
 
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.santaev.refillpoints.data.api.IRefillPointsApi
 import ru.santaev.refillpoints.data.api.request.GetRefillPointsApiRequest
@@ -18,12 +17,21 @@ internal class RefillPointsRepository(
 
     override fun getRefillPoints(
         request: GetRefillPointsRequest
-    ): Single<List<IRefillPointsRepository.RefillPointDto>> {
+    ): Flowable<List<IRefillPointsRepository.RefillPointDto>> {
         return getTransformedApiRefillPoints(request)
     }
 
     override fun markRefillPointAsViewed(refillPointId: Long): Completable {
-        return Completable.complete()
+        return refillPointsDatabase
+            .getRefillPoint(refillPointId)
+            .flatMapCompletable { point ->
+                updateEntity(
+                    point.copy(
+                        isViewed = true
+                    )
+                )
+            }
+            .subscribeOn(Schedulers.io())
     }
 
     private fun List<IRefillPointsDatabase.RefillPointDto>.filterInRadius(
@@ -66,14 +74,13 @@ internal class RefillPointsRepository(
 
     private fun getTransformedApiRefillPoints(
         request: GetRefillPointsRequest
-    ): Single<List<IRefillPointsRepository.RefillPointDto>> {
+    ): Flowable<List<IRefillPointsRepository.RefillPointDto>> {
         return refillPointsApi
             .getRefillPoints(request.toApiRequest())
-            .flatMap { list ->
+            .flatMapPublisher { list ->
                 saveToDatabase(list)
                     .toFlowable<List<IRefillPointsRepository.RefillPointDto>>()
                     .concatWith(getFromDatabase(request))
-                    .first(listOf())
             }
             .subscribeOn(Schedulers.io())
     }
@@ -106,13 +113,22 @@ internal class RefillPointsRepository(
         return if (entityInDb == null) {
             refillPointsDatabase.insert(listOf(refillPoint))
         } else {
-            refillPointsDatabase.update(
-                refillPointDto = refillPoint.copy(
-                    id = entityInDb.id,
-                    externalId = entityInDb.externalId
+            if (entityInDb != refillPoint.copy(id = entityInDb.id)) {
+                refillPointsDatabase.update(
+                    refillPointDto = refillPoint.copy(
+                        id = entityInDb.id,
+                        externalId = entityInDb.externalId,
+                        isViewed = entityInDb.isViewed
+                    )
                 )
-            )
+            } else {
+                Completable.complete()
+            }
         }
+    }
+
+    private fun updateEntity(refillPoint: IRefillPointsDatabase.RefillPointDto): Completable {
+        return refillPointsDatabase.update(refillPoint)
     }
 }
 

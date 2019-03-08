@@ -37,9 +37,10 @@
             android:layout_marginStart="16dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/icon"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_details"
             app:layout_constraintBottom_toTopOf="@+id/guideline"
-            android:layout_marginEnd="16dp">
+            android:layout_marginEnd="8dp"
+            android:id="@+id/linearLayout">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/name"
@@ -62,6 +63,17 @@
                 tools:text="Moscow, Lenin street, house 12"/>
 
         </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:id="@+id/btn_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Details"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/guideline"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:layout_width="wrap_content"

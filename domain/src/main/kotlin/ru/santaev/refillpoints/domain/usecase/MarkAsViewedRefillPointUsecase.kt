@@ -1,11 +1,14 @@
 package ru.santaev.refillpoints.domain.usecase
 
 import io.reactivex.Completable
+import ru.santaev.refillpoints.domain.repository.IRefillPointsRepository
 
-class MarkAsViewedRefillPointUsecase : IUsecase<Completable, MarkAsViewedRefillPointUsecase.Param> {
+class MarkAsViewedRefillPointUsecase(
+    private val refillPointsRepository: IRefillPointsRepository
+) : IUsecase<Completable, MarkAsViewedRefillPointUsecase.Param> {
 
     override fun execute(param: Param): Completable {
-        return Completable.complete()
+        return refillPointsRepository.markRefillPointAsViewed(param.refillPointId)
     }
 
     class Param(

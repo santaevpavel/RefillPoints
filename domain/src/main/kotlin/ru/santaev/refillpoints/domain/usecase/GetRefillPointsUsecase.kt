@@ -1,6 +1,6 @@
 package ru.santaev.refillpoints.domain.usecase
 
-import io.reactivex.Single
+import io.reactivex.Flowable
 import ru.santaev.refillpoints.domain.dto.RefillPointDto
 import ru.santaev.refillpoints.domain.repository.IRefillPointsRepository
 import ru.santaev.refillpoints.domain.repository.request.GetRefillPointsRequest
@@ -8,9 +8,9 @@ import ru.santaev.refillpoints.domain.repository.request.GetRefillPointsRequest
 
 class GetRefillPointsUsecase(
     private val refillPointsRepository: IRefillPointsRepository
-) : IUsecase<Single<List<RefillPointDto>>, GetRefillPointsUsecase.Param> {
+) : IUsecase<Flowable<List<RefillPointDto>>, GetRefillPointsUsecase.Param> {
 
-    override fun execute(param: Param): Single<List<RefillPointDto>> {
+    override fun execute(param: Param): Flowable<List<RefillPointDto>> {
         return refillPointsRepository.getRefillPoints(
             request = GetRefillPointsRequest(
                 latitude = param.lat,

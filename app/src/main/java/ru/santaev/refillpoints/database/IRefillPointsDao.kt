@@ -15,6 +15,9 @@ interface IRefillPointsDao {
     @Query("SELECT * FROM ${RefillPointEntity.tableName} WHERE external_id=:externalId")
     fun getRefillPoint(externalId: String): Single<RefillPointEntity>
 
+    @Query("SELECT * FROM ${RefillPointEntity.tableName} WHERE id=:id")
+    fun getRefillPoint(id: Long): Single<RefillPointEntity>
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insert(entities: List<RefillPointEntity>): Completable
 

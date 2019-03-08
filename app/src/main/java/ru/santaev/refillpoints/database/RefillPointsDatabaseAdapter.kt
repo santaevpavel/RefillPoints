@@ -24,6 +24,11 @@ class RefillPointsDatabaseAdapter(
 
     }
 
+    override fun getRefillPoint(id: Long): Single<IRefillPointsDatabase.RefillPointDto> {
+        return refillPointsDao
+            .getRefillPoint(id)
+            .map { it.toDto() }
+    }
     override fun insert(entities: List<IRefillPointsDatabase.RefillPointDto>): Completable {
         return refillPointsDao.insert(entities.map { it.toEntity() })
     }

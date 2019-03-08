@@ -7,6 +7,7 @@ import io.reactivex.subjects.Subject
 import ru.santaev.refillpoints.domain.dto.LocationDto
 import ru.santaev.refillpoints.domain.dto.RefillPointDto
 import ru.santaev.refillpoints.domain.usecase.GetRefillPointsUsecase
+import ru.santaev.refillpoints.domain.usecase.MarkAsViewedRefillPointUsecase
 import ru.santaev.refillpoints.log.ILoggable
 import ru.santaev.refillpoints.utils.distanceBetween
 import ru.santaev.refillpoints.view.IRefillPointsMapView
@@ -14,11 +15,13 @@ import java.util.concurrent.TimeUnit
 
 class RefillPointsMapPresenter(
     private val parentPresenter: RefillPointsPresenter,
-    private val getRefillPointsUsecase: GetRefillPointsUsecase
+    private val getRefillPointsUsecase: GetRefillPointsUsecase,
+    private val markAsViewedRefillPointUsecase: MarkAsViewedRefillPointUsecase
 ) : BasePresenter<IRefillPointsMapView>(null), ILoggable {
 
     private val cameraMoveObject: Subject<MoveCameraEvent> = PublishSubject.create()
     private var refillPoints: List<RefillPointViewModel>? = null
+    private var detailsRefillPoint: RefillPointViewModel? = null
 
     init {
         cameraMoveObject
@@ -40,7 +43,16 @@ class RefillPointsMapPresenter(
 
     fun onClickRefillPointMarker(id: Long) {
         val point = refillPoints?.firstOrNull { it.id == id } ?: return
+        detailsRefillPoint = point
         view?.showBottomSheet(point)
+    }
+
+    fun onClickOpenDetail() {
+        detailsRefillPoint?.let { point ->
+            if (!point.isViewed) {
+                markAsViewed(point.id)
+            }
+        }
     }
 
     private fun onMoveCameraProcessed(event: MoveCameraEvent) {
@@ -68,7 +80,7 @@ class RefillPointsMapPresenter(
             )
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
-                onSuccess = ::onRefillPointsLoaded,
+                onNext = ::onRefillPointsLoaded,
                 onError = { log("Error while loading points: $it") }
             )
             .also { registerDisposable(it) }
@@ -79,6 +91,14 @@ class RefillPointsMapPresenter(
         refillPoints = list
             .map { it.toViewModel() }
             .also { view?.showRefillPoints(it) }
+    }
+
+    private fun markAsViewed(refillPointId: Long) {
+        markAsViewedRefillPointUsecase
+            .execute(MarkAsViewedRefillPointUsecase.Param(refillPointId))
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy()
+            .also { registerDisposable(it) }
     }
 
     data class Location(

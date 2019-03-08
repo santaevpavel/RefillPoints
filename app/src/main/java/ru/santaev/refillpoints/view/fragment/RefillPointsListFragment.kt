@@ -1,5 +1,6 @@
 package ru.santaev.refillpoints.view.fragment
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +29,11 @@ class RefillPointsListFragment : Fragment(), IRefillPointsListView {
     private lateinit var binding: FragmentRefillPointsListBinding
     private val adapter = SimpleRecyclerViewAdapter<RefillPointViewModel, RefillPointsListItemBinding>(
         layoutResId = R.layout.refill_points_list_item,
-        binder = { item, holder -> holder.binding.point = item },
+        binder = { item, holder ->
+            holder.binding.point = item
+            holder.binding.name.setTypeface(null, if (item.isViewed) Typeface.NORMAL else Typeface.BOLD)
+            holder.binding.address.setTypeface(null, if (item.isViewed) Typeface.NORMAL else Typeface.BOLD)
+        },
         viewCreator = {}
     )
 

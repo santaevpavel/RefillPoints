@@ -85,6 +85,7 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
         mapFragment.getMapAsync { initGoogleMap(it) }
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet.root)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        binding.bottomSheet.btnDetails.setOnClickListener { onDetailClick() }
     }
 
     private fun initPresenter() {
@@ -104,6 +105,10 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
             goToCurrentLocation(animate = false)
             setOnMarkerClickListener(this@RefillPointsMapFragment::onMarkerClick)
         }
+    }
+
+    private fun onDetailClick() {
+        presenter.onClickOpenDetail()
     }
 
     private fun onMarkerClick(marker: Marker): Boolean {

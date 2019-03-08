@@ -30,7 +30,7 @@ internal fun IRefillPointsDatabase.RefillPointDto.toRepositoryDto(
         addressInfo = this.addressInfo.orEmpty(),
         phones = this.phones.orEmpty(),
         fullAddress = this.fullAddress,
-        isViewed = false
+        isViewed = this.isViewed
     )
 }
 

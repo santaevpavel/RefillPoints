@@ -11,6 +11,8 @@ interface IRefillPointsDatabase {
 
     fun getRefillPoint(externalId: String): Single<RefillPointDto>
 
+    fun getRefillPoint(id: Long): Single<RefillPointDto>
+
     fun insert(entities: List<RefillPointDto>): Completable
 
     fun update(refillPointDto: RefillPointDto): Completable
