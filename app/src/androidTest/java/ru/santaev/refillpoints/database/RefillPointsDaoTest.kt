@@ -27,7 +27,7 @@ class RefillPointsDaoTest : ILoggable {
     fun testGetEmptyList() {
         database
             .getRefillPoints()
-            .doOnNext { log("Receive: ${it}") }
+            .doOnNext { log("Receive: $it") }
             .test()
             .awaitCount(1)
             .assertValue(listOf())

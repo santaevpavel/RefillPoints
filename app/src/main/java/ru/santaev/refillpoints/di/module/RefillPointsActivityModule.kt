@@ -31,11 +31,7 @@ class RefillPointsActivityModule {
 
     @RefillPointsActivityScope
     @Provides
-    fun provideRefillPointsListPresenter(
-        parentPresenter: RefillPointsPresenter
-    ): RefillPointsListPresenter {
-        return RefillPointsListPresenter(
-            parentPresenter = parentPresenter
-        )
+    fun provideRefillPointsListPresenter(): RefillPointsListPresenter {
+        return RefillPointsListPresenter()
     }
 }

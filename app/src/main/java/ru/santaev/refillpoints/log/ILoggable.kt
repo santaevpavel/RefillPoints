@@ -27,7 +27,7 @@ interface ILoggable {
         )
     }
 
-    open fun tag(): String = this::class.java.simpleName
+    fun tag(): String = this::class.java.simpleName
 
     enum class Level {
         DEBUG

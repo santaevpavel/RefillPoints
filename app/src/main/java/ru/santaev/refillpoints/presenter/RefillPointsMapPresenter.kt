@@ -94,6 +94,7 @@ class RefillPointsMapPresenter(
         val lng: Double
     )
 
+    @Suppress("unused")
     class RefillPointViewModel(
         val id: Long,
         val partnerName: String,

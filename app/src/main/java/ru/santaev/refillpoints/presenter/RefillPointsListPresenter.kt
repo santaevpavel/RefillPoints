@@ -4,9 +4,7 @@ import ru.santaev.refillpoints.domain.dto.RefillPointDto
 import ru.santaev.refillpoints.log.ILoggable
 import ru.santaev.refillpoints.view.IRefillPointsListView
 
-class RefillPointsListPresenter(
-    private val parentPresenter: RefillPointsPresenter
-) : BasePresenter<IRefillPointsListView>(null), ILoggable {
+class RefillPointsListPresenter : BasePresenter<IRefillPointsListView>(null), ILoggable {
 
     private var refillPoints: List<RefillPointViewModel>? = null
 
