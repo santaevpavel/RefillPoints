@@ -74,15 +74,17 @@ class RefillPointsMapPresenter(
                     radius = radius
                 )
             )
+            .first(listOf())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
-                onNext = ::onRefillPointsLoaded,
+                onSuccess = ::onRefillPointsLoaded,
                 onError = { log("Error while loading points: $it") }
             )
             .also { registerDisposable(it) }
     }
 
     private fun onRefillPointsLoaded(list: List<RefillPointDto>) {
+        log("onRefillPointsLoaded ${list.size}")
         parentPresenter.onLoadedRefillPoints(list)
         refillPoints = list
             .map { it.toViewModel() }
@@ -127,5 +129,6 @@ class RefillPointsMapPresenter(
     companion object {
 
         private const val cameraMoveEventDebounceTimeoutSeconds = 1
+        private const val refillPointsUpdateDebounceMillis = 100
     }
 }
