@@ -155,6 +155,7 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
             googleMap.animateCamera(cameraPosition)
         } else {
             googleMap.moveCamera(cameraPosition)
+            onCameraMove()
         }
     }
 
