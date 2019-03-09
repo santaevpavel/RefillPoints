@@ -6,20 +6,33 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.santaev.refillpoints.data.api.IRefillPointsApi
 import ru.santaev.refillpoints.data.api.request.GetRefillPointsApiRequest
+import ru.santaev.refillpoints.data.database.IRefillPointQueriesDatabase
+import ru.santaev.refillpoints.data.database.IRefillPointQueriesDatabase.RefillPointQueryDto
 import ru.santaev.refillpoints.data.database.IRefillPointsDatabase
+import ru.santaev.refillpoints.data.dto.LocationDto
 import ru.santaev.refillpoints.data.utils.distanceBetween
 import ru.santaev.refillpoints.domain.repository.IRefillPointsRepository
 import ru.santaev.refillpoints.domain.repository.request.GetRefillPointsRequest
+import java.util.concurrent.TimeUnit
 
 internal class RefillPointsRepository(
     private val refillPointsApi: IRefillPointsApi,
-    private val refillPointsDatabase: IRefillPointsDatabase
+    private val refillPointsDatabase: IRefillPointsDatabase,
+    private val refillPointQueriesDatabase: IRefillPointQueriesDatabase,
+    private val cacheParams: CacheParams
 ) : IRefillPointsRepository {
 
     override fun getRefillPoints(
         request: GetRefillPointsRequest
     ): Flowable<List<IRefillPointsRepository.RefillPointDto>> {
-        return getTransformedApiRefillPoints(request)
+        return isDatabaseEntitiesActual(request)
+            .flatMapPublisher { isActual ->
+                if (isActual) {
+                    getFromDatabase(request)
+                } else {
+                    getTransformedApiRefillPoints(request)
+                }
+            }
     }
 
     override fun markRefillPointAsViewed(refillPointId: Long): Completable {
@@ -86,7 +99,8 @@ internal class RefillPointsRepository(
         return refillPointsApi
             .getRefillPoints(request.toApiRequest())
             .flatMapPublisher { list ->
-                saveToDatabase(list)
+                saveQuery(request)
+                    .concatWith(saveToDatabase(list))
                     .toFlowable<List<IRefillPointsRepository.RefillPointDto>>()
                     .concatWith(getFromDatabase(request))
             }
@@ -138,7 +152,41 @@ internal class RefillPointsRepository(
     private fun updateEntity(refillPoint: IRefillPointsDatabase.RefillPointDto): Completable {
         return refillPointsDatabase.update(refillPoint)
     }
+
+    private fun saveQuery(request: GetRefillPointsRequest): Completable {
+        return refillPointQueriesDatabase
+            .insertRefillPointsQuery(
+                refillPointQuery = RefillPointQueryDto(
+                    id = 0,
+                    date = System.currentTimeMillis(),
+                    location = LocationDto(request.latitude, request.longitude),
+                    radius = request.radius.toLong()
+                )
+            )
+    }
+
+    private fun isDatabaseEntitiesActual(request: GetRefillPointsRequest): Single<Boolean> {
+        val earlierActualDate = System.currentTimeMillis() - TimeUnit.SECONDS.toMillis(cacheParams.actualTimeSeconds)
+        return refillPointQueriesDatabase
+            .getRefillPointsQueries(afterDate = earlierActualDate)
+            .first(listOf())
+            .map { queries -> queries.any { it.isContain(request) } }
+    }
+
+    private fun RefillPointQueryDto.isContain(request: GetRefillPointsRequest): Boolean {
+        val distanceBetweenPoints = distanceBetween(
+            lat1 = location.lat,
+            lon1 = location.lng,
+            lat2 = request.latitude,
+            lon2 = request.longitude
+        )
+        return radius > distanceBetweenPoints + request.radius
+    }
 }
+
+class CacheParams(
+    val actualTimeSeconds: Long
+)
 
 interface IRefillPointsCacheValidator {
 

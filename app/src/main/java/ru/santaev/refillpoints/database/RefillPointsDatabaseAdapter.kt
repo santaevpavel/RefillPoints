@@ -5,6 +5,7 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import ru.santaev.refillpoints.data.database.IRefillPointsDatabase
 import ru.santaev.refillpoints.data.dto.LocationDto
+import ru.santaev.refillpoints.database.dao.IRefillPointsDao
 import ru.santaev.refillpoints.database.entity.RefillPointEntity
 
 class RefillPointsDatabaseAdapter(

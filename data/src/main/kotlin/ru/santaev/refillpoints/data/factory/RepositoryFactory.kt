@@ -1,5 +1,6 @@
 package ru.santaev.refillpoints.data.factory
 
+import ru.santaev.refillpoints.data.repository.CacheParams
 import ru.santaev.refillpoints.data.repository.IRefillPointsCacheValidator
 import ru.santaev.refillpoints.data.repository.RefillPointsCacheValidator
 import ru.santaev.refillpoints.data.repository.RefillPointsRepository
@@ -8,7 +9,8 @@ import ru.santaev.refillpoints.domain.repository.IRefillPointsRepository
 
 internal class RepositoryFactory(
     private val apiFactory: IApiFactory,
-    private val databaseFactory: IDatabaseFactory
+    private val databaseFactory: IDatabaseFactory,
+    private val cacheParams: CacheParams
 ) : IRepositoryFactory {
 
     override fun getRefillPointsRepository(): IRefillPointsRepository {
@@ -21,7 +23,9 @@ internal class RepositoryFactory(
     private fun createRefillPointsRepository(): IRefillPointsRepository {
         return RefillPointsRepository(
             refillPointsApi = apiFactory.getRefillPointsApi(),
-            refillPointsDatabase = databaseFactory.getRefillPointsDatabase()
+            refillPointsDatabase = databaseFactory.getRefillPointsDatabase(),
+            refillPointQueriesDatabase = databaseFactory.getRefillPointQueriesDatabase(),
+            cacheParams = cacheParams
         )
     }
 
@@ -35,9 +39,13 @@ internal class RepositoryFactory(
     }
 }
 
-fun getRepositoryFactory(databaseFactory: IDatabaseFactory): IRepositoryFactory {
+fun getRepositoryFactory(
+    databaseFactory: IDatabaseFactory,
+    cacheParams: CacheParams
+): IRepositoryFactory {
     return RepositoryFactory(
         apiFactory = ApiFactory(),
-        databaseFactory = databaseFactory
+        databaseFactory = databaseFactory,
+        cacheParams = cacheParams
     )
 }

@@ -4,6 +4,7 @@ import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Before
 import org.junit.Test
+import ru.santaev.refillpoints.database.dao.IRefillPointsDao
 import ru.santaev.refillpoints.database.entity.RefillPointEntity
 import ru.santaev.refillpoints.log.ILoggable
 

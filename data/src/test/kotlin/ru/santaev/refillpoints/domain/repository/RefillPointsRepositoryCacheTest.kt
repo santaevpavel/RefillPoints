@@ -9,22 +9,33 @@ import org.amshove.kluent.shouldBe
 import org.junit.Test
 import ru.santaev.refillpoints.data.api.IRefillPointsApi
 import ru.santaev.refillpoints.data.database.IRefillPointQueriesDatabase
+import ru.santaev.refillpoints.data.database.IRefillPointQueriesDatabase.RefillPointQueryDto
 import ru.santaev.refillpoints.data.database.IRefillPointsDatabase
 import ru.santaev.refillpoints.data.dto.LocationDto
 import ru.santaev.refillpoints.data.repository.CacheParams
 import ru.santaev.refillpoints.data.repository.RefillPointsRepository
 import ru.santaev.refillpoints.domain.repository.request.GetRefillPointsRequest
 
-class RefillPointsRepositoryTest {
+class RefillPointsRepositoryCacheTest {
 
-    private val refillPointsFromApi: List<IRefillPointsApi.RefillPointDto> = listOf(
-        create(
-            externalId = "A",
-            partnerName = "Partner1"
+    private val queries: List<RefillPointQueryDto> = listOf(
+        RefillPointQueryDto(
+            id = 0,
+            date = System.currentTimeMillis(),
+            location = LocationDto(0.0, 0.0),
+            radius = 100
         ),
-        create(
-            externalId = "B",
-            partnerName = "Partner2"
+        RefillPointQueryDto(
+            id = 1,
+            date = 0,
+            location = LocationDto(0.0, 0.0),
+            radius = 100000000
+        ),
+        RefillPointQueryDto(
+            id = 2,
+            date = 0,
+            location = LocationDto(90.0, 90.0),
+            radius = 1000
         )
     )
 
@@ -32,17 +43,19 @@ class RefillPointsRepositoryTest {
         createEntity(
             id = 1,
             externalId = "A",
-            partnerName = "Partner1"
+            partnerName = "Partner1",
+            location = LocationDto(0.0, 0.0)
         ),
         createEntity(
             id = 2,
             externalId = "B",
-            partnerName = "Partner2"
+            partnerName = "Partner2",
+            location = LocationDto(90.0, 90.0)
         )
     )
 
     @Test
-    fun `test get list when no queries saved`() {
+    fun `test get list when with queries`() {
         val repository = createRepository()
 
         val refillPointValues = repository
@@ -55,8 +68,24 @@ class RefillPointsRepositoryTest {
 
         val refillPoints = refillPointValues.first()
 
-        refillPoints.size shouldBe 2
+        refillPoints.size shouldBe 1
         refillPoints.any { it.id == 1L && it.partnerName == "Partner1" } shouldBe true
+    }
+
+    @Test
+    fun `test get list when with queries 2`() {
+        val repository = createRepository()
+
+        val refillPointValues = repository
+            .getRefillPoints(request = GetRefillPointsRequest(90.0, 90.0, 10))
+            .test()
+            .awaitCount(1)
+            .values()
+
+        refillPointValues.size shouldBe 1
+        val refillPoints = refillPointValues.first()
+
+        refillPoints.size shouldBe 1
         refillPoints.any { it.id == 2L && it.partnerName == "Partner2" } shouldBe true
     }
 
@@ -65,7 +94,7 @@ class RefillPointsRepositoryTest {
             refillPointsApi = createApi(),
             refillPointsDatabase = createDatabase(),
             refillPointQueriesDatabase = createQueriesDatabase(),
-            cacheParams = CacheParams(0)
+            cacheParams = CacheParams(1)
         )
     }
 
@@ -74,7 +103,7 @@ class RefillPointsRepositoryTest {
         every {
             api.getRefillPoints(any())
         }.returns(
-            Single.just(refillPointsFromApi)
+            Single.just(emptyList())
         )
         return api
     }
@@ -96,10 +125,6 @@ class RefillPointsRepositoryTest {
             database.getRefillPoints()
         }.returns(
             Flowable
-                .just(emptyList<IRefillPointsDatabase.RefillPointDto>())
-                .concatWith(Flowable.never())
-        ).andThen(
-            Flowable
                 .just(refillPointsFromDatabase)
                 .concatWith(Flowable.never())
         )
@@ -119,15 +144,15 @@ class RefillPointsRepositoryTest {
     private fun createQueriesDatabase(): IRefillPointQueriesDatabase {
         val database = mockk<IRefillPointQueriesDatabase>()
         every {
-            database.getRefillPointsQueries(any())
-        }.returns(
-            Flowable.just(listOf())
-        )
-        every {
             database.insertRefillPointsQuery(any())
-        }.returns(
-            Completable.complete()
-        )
+        }.returns(Completable.complete())
+        every {
+            database.getRefillPointsQueries(any())
+        }.answers {
+            queries
+                .filter { it.date >= arg<Long>(0) }
+                .let { Flowable.just(it) }
+        }
         return database
     }
 }

@@ -1,4 +1,4 @@
-package ru.santaev.refillpoints.database
+package ru.santaev.refillpoints.database.dao
 
 import androidx.room.*
 import io.reactivex.Completable
