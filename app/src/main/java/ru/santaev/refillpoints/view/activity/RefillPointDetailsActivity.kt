@@ -3,6 +3,8 @@ package ru.santaev.refillpoints.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import ru.santaev.refillpoints.R
@@ -12,6 +14,7 @@ import ru.santaev.refillpoints.di.component.DaggerRefillPointDetailsActivityComp
 import ru.santaev.refillpoints.presenter.RefillPointDetailsPresenter
 import ru.santaev.refillpoints.view.IRefillPointDetailsView
 import javax.inject.Inject
+
 
 class RefillPointDetailsActivity : AppCompatActivity(), IRefillPointDetailsView {
 
@@ -29,17 +32,33 @@ class RefillPointDetailsActivity : AppCompatActivity(), IRefillPointDetailsView 
     override fun showRefillPoint(refillPoint: RefillPointDetailsPresenter.RefillPointDetailsViewModel) {
         binding.content.apply {
             name.value.text = refillPoint.partnerName
-            name.title.text = "Partner"
             address.value.text = refillPoint.fullAddress
-            address.title.text = "Address"
             phone.value.text = refillPoint.phones
-            phone.title.text = "Phone"
+            workHours.value.text = refillPoint.workHours
+
+            if (refillPoint.phones.isEmpty()) {
+                phone.root.visibility = View.GONE
+            }
+            if (refillPoint.workHours.isEmpty()) {
+                workHours.root.visibility = View.GONE
+            }
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         presenter.onDestroy()
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun loadArguments() {
@@ -52,6 +71,14 @@ class RefillPointDetailsActivity : AppCompatActivity(), IRefillPointDetailsView 
 
     private fun initUi() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_refill_point_details)
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.content.apply {
+            name.title.text = getString(R.string.refill_points_details_title_partner)
+            address.title.text = getString(R.string.refill_points_details_title_address)
+            phone.title.text = getString(R.string.refill_points_details_title_phone)
+            workHours.title.text = getString(R.string.refill_points_details_title_work_house)
+        }
     }
 
     private fun initPresenter() {

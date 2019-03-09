@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">RefillPoints</string>
+    <string name="refill_points_details_title_partner">Partner</string>
+    <string name="refill_points_details_title_address">Address</string>
+    <string name="refill_points_details_title_phone">Phone</string>
+    <string name="refill_points_details_title_work_house">Work hours</string>
 </resources>
