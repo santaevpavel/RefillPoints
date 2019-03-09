@@ -1,6 +1,7 @@
 package ru.santaev.refillpoints.presenter
 
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
@@ -21,10 +22,12 @@ class RefillPointsMapPresenter(
     private var refillPoints: List<RefillPointViewModel>? = null
     private var detailsRefillPoint: RefillPointViewModel? = null
 
+    private var loadRefillPointsDisposable: Disposable? = null
+
     init {
         cameraMoveObject
             .distinctUntilChanged()
-            .debounce(cameraMoveEventDebounceTimeoutSeconds.toLong(), TimeUnit.SECONDS)
+            .debounce(cameraMoveEventDebounceTimeoutMillis.toLong(), TimeUnit.MILLISECONDS)
             .subscribeBy(
                 onNext = ::onMoveCameraProcessed
             )
@@ -58,14 +61,17 @@ class RefillPointsMapPresenter(
             lat2 = event.leftTopPoint.lat,
             lon2 = event.leftTopPoint.lng
         )
-        loadRefillPoints(
-            lat = event.location.lat,
-            lng = event.location.lng,
-            radius = radius.toInt()
-        )
+        if (radius < maxRadiusToLoad) {
+            loadRefillPoints(
+                lat = event.location.lat,
+                lng = event.location.lng,
+                radius = radius.toInt()
+            )
+        }
     }
 
     private fun loadRefillPoints(lat: Double, lng: Double, radius: Int) {
+        loadRefillPointsDisposable?.dispose()
         getRefillPointsUsecase
             .execute(
                 param = GetRefillPointsUsecase.Param(
@@ -74,13 +80,15 @@ class RefillPointsMapPresenter(
                     radius = radius
                 )
             )
-            .first(listOf())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
-                onSuccess = ::onRefillPointsLoaded,
+                onNext = ::onRefillPointsLoaded,
                 onError = { log("Error while loading points: $it") }
             )
-            .also { registerDisposable(it) }
+            .also { disposable ->
+                loadRefillPointsDisposable = disposable
+                registerDisposable(disposable)
+            }
     }
 
     private fun onRefillPointsLoaded(list: List<RefillPointDto>) {
@@ -128,7 +136,7 @@ class RefillPointsMapPresenter(
 
     companion object {
 
-        private const val cameraMoveEventDebounceTimeoutSeconds = 1
-        private const val refillPointsUpdateDebounceMillis = 100
+        private const val cameraMoveEventDebounceTimeoutMillis = 300
+        private const val maxRadiusToLoad = 100 * 1000
     }
 }

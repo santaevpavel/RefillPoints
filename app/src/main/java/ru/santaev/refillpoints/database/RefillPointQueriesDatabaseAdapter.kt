@@ -33,8 +33,8 @@ class RefillPointQueriesDatabaseAdapter(
     private fun RefillPointQueryDto.toEntity(): RefillPointQueryEntity {
         return RefillPointQueryEntity(
             id = this.id,
-            latitude = this.location.lng,
-            longitude = this.location.lat,
+            latitude = this.location.lat,
+            longitude = this.location.lng,
             radius = this.radius,
             date = this.date
         )

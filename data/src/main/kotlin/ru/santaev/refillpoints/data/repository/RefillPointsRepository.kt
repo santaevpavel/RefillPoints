@@ -33,6 +33,7 @@ internal class RefillPointsRepository(
                     getTransformedApiRefillPoints(request)
                 }
             }
+            .subscribeOn(Schedulers.io())
     }
 
     override fun markRefillPointAsViewed(refillPointId: Long): Completable {
@@ -104,7 +105,6 @@ internal class RefillPointsRepository(
                     .toFlowable<List<IRefillPointsRepository.RefillPointDto>>()
                     .concatWith(getFromDatabase(request))
             }
-            .subscribeOn(Schedulers.io())
     }
 
     private fun saveToDatabase(refillPoints: List<IRefillPointsApi.RefillPointDto>): Completable {

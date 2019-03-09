@@ -7,8 +7,13 @@ import androidx.room.RoomDatabase
 import ru.santaev.refillpoints.database.dao.IRefillPointQueriesDao
 import ru.santaev.refillpoints.database.dao.IRefillPointsDao
 import ru.santaev.refillpoints.database.entity.RefillPointEntity
+import ru.santaev.refillpoints.database.entity.RefillPointQueryEntity
 
-@Database(entities = [RefillPointEntity::class], version = 2, exportSchema = false)
+@Database(
+    entities = [RefillPointEntity::class, RefillPointQueryEntity::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class RefillPointsDatabase : RoomDatabase() {
 
     abstract fun refillPointsDao(): IRefillPointsDao

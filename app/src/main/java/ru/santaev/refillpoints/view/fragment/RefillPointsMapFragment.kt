@@ -42,7 +42,7 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
     private var googleMap: GoogleMap? = null
     private var permissionDisposable: Disposable? = null
     private var refillPoints: List<RefillPointViewModel>? = null
-    private var firstStart = false
+    private var firstStart = true
 
     override fun showRefillPoints(refillPoints: List<RefillPointViewModel>) {
         this.refillPoints = refillPoints
