@@ -5,35 +5,28 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import ru.santaev.refillpoints.R
+import ru.santaev.refillpoints.RefillPointsApplication
 import ru.santaev.refillpoints.databinding.ActivityRefillPointDetailsBinding
-import ru.santaev.refillpoints.domain.dto.RefillPointDto
-import ru.santaev.refillpoints.view.IRefillPointsView
-import ru.santaev.refillpoints.view.fragment.RefillPointsListFragment
-import java.io.Serializable
+import ru.santaev.refillpoints.di.component.DaggerRefillPointDetailsActivityComponent
+import ru.santaev.refillpoints.presenter.RefillPointDetailsPresenter
+import ru.santaev.refillpoints.view.IRefillPointDetailsView
+import javax.inject.Inject
 
-class RefillPointDetailsActivity : AppCompatActivity(), IRefillPointsView {
+class RefillPointDetailsActivity : AppCompatActivity(), IRefillPointDetailsView {
 
+    @Inject lateinit var presenter: RefillPointDetailsPresenter
     private lateinit var binding: ActivityRefillPointDetailsBinding
-    private lateinit var refillPoint: RefillPointDetails
+    private var refillPointId: Long = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        refillPoint = intent.extras?.getSerializable(keyInput) as RefillPointDetails?
-            ?: throw IllegalStateException("No activity argument")
+        loadArguments()
+        initPresenter()
         initUi()
     }
 
-    override fun passRefillPoints(refillPoints: List<RefillPointDto>) {
-        val listFragment: Fragment? = supportFragmentManager
-            .fragments
-            .firstOrNull { it is RefillPointsListFragment }
-        (listFragment as? RefillPointsListFragment)?.setRefillPoints(refillPoints)
-    }
-
-    private fun initUi() {
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_refill_point_details)
+    override fun showRefillPoint(refillPoint: RefillPointDetailsPresenter.RefillPointDetailsViewModel) {
         binding.content.apply {
             name.value.text = refillPoint.partnerName
             name.title.text = "Partner"
@@ -44,28 +37,42 @@ class RefillPointDetailsActivity : AppCompatActivity(), IRefillPointsView {
         }
     }
 
-    class RefillPointDetails(
-        val id: Long,
-        val partnerName: String,
-        val location: Location,
-        val workHours: String?,
-        val phones: String?,
-        val addressInfo: String?,
-        val fullAddress: String
-    ): Serializable
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
+    }
 
-    data class Location(
-        val lat: Double,
-        val lng: Double
-    ): Serializable
+    private fun loadArguments() {
+        refillPointId = intent.extras?.getLong(keyInput, -1)
+            ?: throw IllegalStateException("No activity argument")
+        if (refillPointId < 0) {
+            throw IllegalStateException("No activity argument")
+        }
+    }
+
+    private fun initUi() {
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_refill_point_details)
+    }
+
+    private fun initPresenter() {
+        DaggerRefillPointDetailsActivityComponent
+            .builder()
+            .applicationComponent((applicationContext as RefillPointsApplication).applicationComponent)
+            .build()
+            .apply {
+                inject(this@RefillPointDetailsActivity)
+            }
+        presenter.view = this
+        presenter.setRefillPointId(refillPointId)
+    }
 
     companion object {
 
         private const val keyInput = "keyInput"
 
-        fun createIntent(context: Context, refillPoint: RefillPointDetails): Intent {
+        fun createIntent(context: Context, refillPointId: Long): Intent {
             return Intent(context, RefillPointDetailsActivity::class.java).apply {
-                putExtra(keyInput, refillPoint)
+                putExtra(keyInput, refillPointId)
             }
         }
     }

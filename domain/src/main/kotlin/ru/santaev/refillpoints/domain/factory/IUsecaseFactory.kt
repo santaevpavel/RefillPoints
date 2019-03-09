@@ -1,5 +1,6 @@
 package ru.santaev.refillpoints.domain.factory
 
+import ru.santaev.refillpoints.domain.usecase.GetRefillPointUsecase
 import ru.santaev.refillpoints.domain.usecase.GetRefillPointsUsecase
 import ru.santaev.refillpoints.domain.usecase.MarkAsViewedRefillPointUsecase
 
@@ -8,6 +9,8 @@ interface IUsecaseFactory {
     fun getGetRefillPointsUsecase(): GetRefillPointsUsecase
 
     fun getMarkAsViewedRefillPointUsecase(): MarkAsViewedRefillPointUsecase
+
+    fun getGetRefillPointUsecase(): GetRefillPointUsecase
 }
 
 internal class UsecaseFactory(
@@ -20,6 +23,10 @@ internal class UsecaseFactory(
 
     override fun getMarkAsViewedRefillPointUsecase(): MarkAsViewedRefillPointUsecase {
         return MarkAsViewedRefillPointUsecase(repositoryFactory.getRefillPointsRepository())
+    }
+
+    override fun getGetRefillPointUsecase(): GetRefillPointUsecase {
+        return GetRefillPointUsecase(repositoryFactory.getRefillPointsRepository())
     }
 }
 

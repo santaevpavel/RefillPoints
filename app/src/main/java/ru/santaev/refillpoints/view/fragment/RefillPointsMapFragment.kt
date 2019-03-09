@@ -56,17 +56,8 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
     }
 
     override fun openRefillPointDetails(point: RefillPointViewModel) {
-        val details = RefillPointDetailsActivity.RefillPointDetails(
-            id = point.id,
-            partnerName = point.partnerName,
-            location = RefillPointDetailsActivity.Location(point.location.lat, point.location.lng),
-            workHours = point.workHours,
-            addressInfo = point.addressInfo,
-            phones = point.phones,
-            fullAddress = point.fullAddress
-        )
         val context = context ?: return
-        startActivity(RefillPointDetailsActivity.createIntent(context, details))
+        startActivity(RefillPointDetailsActivity.createIntent(context, point.id))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

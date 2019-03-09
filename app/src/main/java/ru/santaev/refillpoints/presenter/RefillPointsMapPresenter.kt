@@ -7,7 +7,6 @@ import io.reactivex.subjects.Subject
 import ru.santaev.refillpoints.domain.dto.LocationDto
 import ru.santaev.refillpoints.domain.dto.RefillPointDto
 import ru.santaev.refillpoints.domain.usecase.GetRefillPointsUsecase
-import ru.santaev.refillpoints.domain.usecase.MarkAsViewedRefillPointUsecase
 import ru.santaev.refillpoints.log.ILoggable
 import ru.santaev.refillpoints.utils.distanceBetween
 import ru.santaev.refillpoints.view.IRefillPointsMapView
@@ -15,8 +14,7 @@ import java.util.concurrent.TimeUnit
 
 class RefillPointsMapPresenter(
     private val parentPresenter: RefillPointsPresenter,
-    private val getRefillPointsUsecase: GetRefillPointsUsecase,
-    private val markAsViewedRefillPointUsecase: MarkAsViewedRefillPointUsecase
+    private val getRefillPointsUsecase: GetRefillPointsUsecase
 ) : BasePresenter<IRefillPointsMapView>(null), ILoggable {
 
     private val cameraMoveObject: Subject<MoveCameraEvent> = PublishSubject.create()
@@ -49,9 +47,6 @@ class RefillPointsMapPresenter(
 
     fun onClickOpenDetail() {
         detailsRefillPoint?.let { point ->
-            if (!point.isViewed) {
-                markAsViewed(point.id)
-            }
             view?.openRefillPointDetails(point)
         }
     }
@@ -92,14 +87,6 @@ class RefillPointsMapPresenter(
         refillPoints = list
             .map { it.toViewModel() }
             .also { view?.showRefillPoints(it) }
-    }
-
-    private fun markAsViewed(refillPointId: Long) {
-        markAsViewedRefillPointUsecase
-            .execute(MarkAsViewedRefillPointUsecase.Param(refillPointId))
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy()
-            .also { registerDisposable(it) }
     }
 
     data class Location(

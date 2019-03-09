@@ -2,6 +2,7 @@ package ru.santaev.refillpoints.data.repository
 
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.santaev.refillpoints.data.api.IRefillPointsApi
 import ru.santaev.refillpoints.data.api.request.GetRefillPointsApiRequest
@@ -31,6 +32,13 @@ internal class RefillPointsRepository(
                     )
                 )
             }
+            .subscribeOn(Schedulers.io())
+    }
+
+    override fun getRefillPoint(refillPointId: Long): Single<IRefillPointsRepository.RefillPointDto> {
+        return refillPointsDatabase
+            .getRefillPoint(refillPointId)
+            .map { it.toRepositoryDto() }
             .subscribeOn(Schedulers.io())
     }
 

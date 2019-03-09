@@ -16,7 +16,6 @@ import ru.santaev.refillpoints.databinding.RefillPointsListItemBinding
 import ru.santaev.refillpoints.domain.dto.RefillPointDto
 import ru.santaev.refillpoints.presenter.RefillPointsListPresenter
 import ru.santaev.refillpoints.presenter.RefillPointsListPresenter.RefillPointViewModel
-import ru.santaev.refillpoints.presenter.RefillPointsMapPresenter
 import ru.santaev.refillpoints.view.IRefillPointsListView
 import ru.santaev.refillpoints.view.activity.RefillPointDetailsActivity
 import ru.santaev.refillpoints.view.activity.RefillPointsActivity
@@ -32,9 +31,13 @@ class RefillPointsListFragment : Fragment(), IRefillPointsListView {
     private val adapter = SimpleRecyclerViewAdapter<RefillPointViewModel, RefillPointsListItemBinding>(
         layoutResId = R.layout.refill_points_list_item,
         binder = { item, holder ->
-            holder.binding.point = item
-            holder.binding.name.setTypeface(null, if (item.isViewed) Typeface.NORMAL else Typeface.BOLD)
-            holder.binding.address.setTypeface(null, if (item.isViewed) Typeface.NORMAL else Typeface.BOLD)
+            holder.binding.apply {
+                point = item
+                name.setTypeface(null, if (item.isViewed) Typeface.NORMAL else Typeface.BOLD)
+                address.setTypeface(null, if (item.isViewed) Typeface.NORMAL else Typeface.BOLD)
+                root.setOnClickListener { openRefillPointDetails(item) }
+            }
+
         },
         viewCreator = {}
     )
@@ -47,23 +50,19 @@ class RefillPointsListFragment : Fragment(), IRefillPointsListView {
         adapter.items = refillPoints
     }
 
-    override fun openRefillPointDetails(point: RefillPointsMapPresenter.RefillPointViewModel) {
-        val details = RefillPointDetailsActivity.RefillPointDetails(
-            id = point.id,
-            partnerName = point.partnerName,
-            location = RefillPointDetailsActivity.Location(point.location.lat, point.location.lng),
-            workHours = point.workHours,
-            addressInfo = point.addressInfo,
-            phones = point.phones,
-            fullAddress = point.fullAddress
-        )
+    override fun openRefillPointDetails(point: RefillPointViewModel) {
         val context = context ?: return
-        startActivity(RefillPointDetailsActivity.createIntent(context, details))
+        startActivity(RefillPointDetailsActivity.createIntent(context, point.id))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initPresenter()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

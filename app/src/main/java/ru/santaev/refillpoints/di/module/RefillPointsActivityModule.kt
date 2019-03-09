@@ -25,8 +25,7 @@ class RefillPointsActivityModule {
     ): RefillPointsMapPresenter {
         return RefillPointsMapPresenter(
             parentPresenter = parentPresenter,
-            getRefillPointsUsecase = usecaseFactory.getGetRefillPointsUsecase(),
-            markAsViewedRefillPointUsecase = usecaseFactory.getMarkAsViewedRefillPointUsecase()
+            getRefillPointsUsecase = usecaseFactory.getGetRefillPointsUsecase()
         )
     }
 

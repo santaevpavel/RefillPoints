@@ -54,7 +54,6 @@ class RefillPointsActivity : AppCompatActivity(), IRefillPointsView {
                 component = this@apply
                 inject(this@RefillPointsActivity)
             }
-
         presenter.view = this
     }
 }
