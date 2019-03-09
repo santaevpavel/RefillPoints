@@ -42,6 +42,7 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
     private var googleMap: GoogleMap? = null
     private var permissionDisposable: Disposable? = null
     private var refillPoints: List<RefillPointViewModel>? = null
+    private var firstStart = false
 
     override fun showRefillPoints(refillPoints: List<RefillPointViewModel>) {
         this.refillPoints = refillPoints
@@ -78,7 +79,10 @@ class RefillPointsMapFragment : Fragment(), IRefillPointsMapView, ILoggable {
 
     override fun onStart() {
         super.onStart()
-        checkAndRequestPermissions()
+        if (firstStart) {
+            firstStart = false
+            checkAndRequestPermissions()
+        }
     }
 
     override fun onDestroy() {
