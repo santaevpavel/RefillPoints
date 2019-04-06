@@ -1,6 +1,10 @@
 # RefillPoints
 Android test task
 
+## Requirements
+
+See in [REQUIREMENTS.md](https://github.com/santaevpavel/RefillPoints/blob/master/REQUIREMENTS.md)
+
 ## Get started
 
 ### Init google map
